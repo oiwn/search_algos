@@ -1,0 +1,7 @@
+click
+pyyaml
+pydantic
+pygame
+pyopengl
+numpy
+

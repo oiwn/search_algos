@@ -1,0 +1,28 @@
+session_name: Algos
+shell_command_before: "conda activate salgos"
+shell_command_after: "sleep 2; clear"
+windows:
+  - window_name: code
+    focus: true
+    start-directory: ./
+    panes:
+      - shell_command:
+        - nvim
+  - window_name: cmd1
+    start-directory: ./
+    panes:
+      - shell_command:
+        - ls
+  - window_name: cmd2
+    start-directory: ./
+    panes:
+      - shell_command:
+        - ls
+  - window_name: files
+    panes:
+      - shell_command:
+        - clear
+  - window_name: notes
+    panes:
+      - shell_command:
+        - emacs notes.org
