@@ -1,32 +1,40 @@
 """Visualization of pathfinding"""
 import pygame
-import numpy as np
 from maze_gen import MazeGen
+from a_search import AStarSearch
 
 
-pygame.init()
-display = pygame.display.set_mode((640, 480), flags=pygame.SCALED)
-#  fake_display = display.copy()
+class Engine:  # pylint: disable=too-few-public-methods
+    """Main engine"""
 
+    def __init__(self):
+        """Initialize engine"""
 
-arr = MazeGen(70, 60).generate()
+        pygame.init()
+        self.display = pygame.display.set_mode((640, 480), flags=pygame.SCALED)
+        self.maze = MazeGen(70, 60).generate()
 
-surf = pygame.surfarray.make_surface(arr)
+        search = AStarSearch(self.maze, (0, 0), (69, 59))
+        came_from, _ = search.run()
+        path = search.reconstruct_path(came_from)
+        for x, y in path:
+            self.maze[x][y] = 100
 
-running: bool = True
+        self.surface = pygame.surfarray.make_surface(self.maze)
 
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
-            running = False
-        #  if event.type == pygame.VIDEORESIZE:
-        #      pygame.display._resize_event(event)
+    def loop(self):
+        """Main loop"""
+        running: bool = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
+                    running = False
 
-    #  fake_display.blit(surf, (0, 0))
-    #  display.blit(surf, (0, 0))
-    display.blit(pygame.transform.scale(surf, (640, 480)), (0, 0))
-    pygame.display.flip()
+            self.display.blit(
+                pygame.transform.scale(self.surface, (640, 480)), (0, 0)
+            )
+            pygame.display.flip()
 
-pygame.quit()
+        pygame.quit()

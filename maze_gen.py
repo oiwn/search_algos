@@ -17,8 +17,8 @@ class MazeGen:
 
     def generate(self):
         """Generate simple maze, trivial randomized way"""
-        arr = np.empty((self.dim_x, self.dim_y), dtype=np.int8)
-        select = [0, 0, 0, 0, 0, 3]
+        arr = np.zeros((self.dim_x, self.dim_y), dtype=np.int16)
+        select = [0, 0, 0, 0, 0, 255]
 
         for x in range(self.dim_x):
             for y in range(self.dim_y):
