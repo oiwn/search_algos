@@ -1,6 +1,8 @@
 """Generate maze"""
 import random
-import numpy as np
+from typing import Tuple
+
+from maze import Maze
 
 
 class MazeGen:
@@ -12,21 +14,22 @@ class MazeGen:
     NOTE: https://stackoverflow.com/q/38502/1376206
     """
 
-    def __init__(self, dim_x: int, dim_y: int):
-        self.dim_x, self.dim_y = dim_x, dim_y
+    def __init__(self, shape: Tuple[int, int]):
+        self.maze = Maze(shape)
 
     def generate(self):
         """Generate simple maze, trivial randomized way"""
-        arr = np.zeros((self.dim_x, self.dim_y), dtype=np.int16)
         select = [0, 0, 0, 0, 0, 255]
 
-        for x in range(self.dim_x):
-            for y in range(self.dim_y):
-                arr[x][y] = select[random.randint(0, len(select) - 1)]
+        for x in range(self.maze.max_x):
+            for y in range(self.maze.max_y):
+                self.maze.grid[x][y] = select[
+                    random.randint(0, len(select) - 1)
+                ]
 
-        # make sure (0, 0) and (dim_x, dim_y) are 0 since it
+        # make sure (0, 0) and (max_x, max_y) are 0 since it
         # supposed to be enter/exit
-        arr[0][0] = 0
-        arr[self.dim_x - 1][self.dim_y - 1] = 0
+        self.maze.grid[0][0] = 0
+        self.maze.grid[self.maze.max_x][self.maze.max_y] = 0
 
-        return arr
+        return self.maze

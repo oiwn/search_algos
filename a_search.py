@@ -35,28 +35,6 @@ class AStarSearch:
         self.start = start
         self.stop = stop
 
-        # calculate max indexes
-        max_x, max_y = self.maze.shape
-        self.max_x = max_x - 1
-        self.max_y = max_y - 1
-
-    def neighbors(self, location: Point) -> List[Point]:
-        x, y = location
-
-        top = x, y - 1
-        right = x + 1, y
-        bottom = x, y + 1
-        left = x - 1, y
-
-        result = []
-        for point in [top, right, bottom, left]:
-            p_x, p_y = point
-            if (0 <= p_x <= self.max_x) and (0 <= p_y <= self.max_y):
-                if self.maze[p_x][p_y] == 0:
-                    result.append(point)
-
-        return result
-
     @staticmethod
     def heuristic(a: Point, b: Point) -> int:
         x_1, y_1 = a
@@ -77,7 +55,7 @@ class AStarSearch:
             if current == self.stop:
                 break
 
-            for point in self.neighbors(current):
+            for point in self.maze.get_cell_neighbors(current):
                 new_cost = cost_so_far[current] + self.heuristic(
                     point, self.stop
                 )

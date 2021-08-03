@@ -12,15 +12,15 @@ class Engine:  # pylint: disable=too-few-public-methods
 
         pygame.init()
         self.display = pygame.display.set_mode((640, 480), flags=pygame.SCALED)
-        self.maze = MazeGen(70, 60).generate()
+        self.maze = MazeGen((70, 60)).generate()
 
         search = AStarSearch(self.maze, (0, 0), (69, 59))
         came_from, _ = search.run()
         path = search.reconstruct_path(came_from)
         for x, y in path:
-            self.maze[x][y] = 100
+            self.maze.grid[x][y] = 100
 
-        self.surface = pygame.surfarray.make_surface(self.maze)
+        self.surface = pygame.surfarray.make_surface(self.maze.grid)
 
     def loop(self):
         """Main loop"""
