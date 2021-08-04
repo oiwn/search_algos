@@ -72,7 +72,12 @@ class AStarSearch:
         path: List[Point] = []
         while current != self.start:
             path.append(current)
-            current = came_from[current]
+            try:
+                current = came_from[current]
+            except KeyError:
+                # sometimes got blocked due to shit maze generation
+                print(came_from)
+                break
         path.append(self.start)
         path.reverse()
         return path

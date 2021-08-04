@@ -17,11 +17,20 @@ def run():
 
 
 @cli.command()
+def gen():
+    from maze_gen import MazeGen
+
+    maze = MazeGen((10, 10))
+    maze.make_maze()
+    maze.print_maze()
+
+
+@cli.command()
 def asearch():
     from maze_gen import MazeGen
     from a_search import AStarSearch
 
-    maze = MazeGen(10, 10).generate()
+    maze = MazeGen((10, 10)).generate()
     click.echo(maze)
     search = AStarSearch(maze, (0, 0), (9, 9))
     #  print(search.neighbors((0, 0)))

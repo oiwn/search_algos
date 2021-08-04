@@ -31,6 +31,15 @@ class Engine:  # pylint: disable=too-few-public-methods
                     running = False
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                     running = False
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+                    self.maze = MazeGen((70, 60)).generate()
+                    search = AStarSearch(self.maze, (0, 0), (69, 59))
+                    came_from, _ = search.run()
+                    path = search.reconstruct_path(came_from)
+                    for x, y in path:
+                        self.maze.grid[x][y] = 100
+
+                    self.surface = pygame.surfarray.make_surface(self.maze.grid)
 
             self.display.blit(
                 pygame.transform.scale(self.surface, (640, 480)), (0, 0)
