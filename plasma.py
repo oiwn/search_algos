@@ -1,5 +1,6 @@
 """Perlin noize generation"""
 import pygame
+import math
 import numpy as np
 
 
@@ -41,38 +42,54 @@ def generate_perlin_noise_2d(shape, res):
     return np.sqrt(2) * ((1 - t[:, :, 1]) * n0 + t[:, :, 1] * n1)
 
 
-def grayscale(surface: pygame.Surface):
-    arr = pygame.surfarray.pixels3d(surface)
-    mean_arr = np.dot(arr[:, :, :], [0.216, 0.587, 0.144])
-    mean_arr3d = mean_arr[..., np.newaxis]
-    new_arr = np.repeat(mean_arr3d[:, :, :], 3, axis=2)
-    return pygame.surfarray.make_surface(new_arr)
-
-
 def generate_surface():
+    """Generate perlin's noize and
+    fit matrix range from [-1...1] to [0...255]
+    """
     surf = (
         ((generate_perlin_noise_2d((800, 800), (10, 10)) + 1) / 2) * 255
     ).astype("uint8")
     return surf
 
 
-def greyscale_pallete(surface):
+def calculate_sin_table():
+    sin_table = []
+    for x in range(360):
+        value = math.sin(math.radians(x))
+        value = ((value + 1) / 2.0) * 255
+        sin_table.append(int(value))
+    return sin_table
+
+
+def change_pallete(surface, value, sin_table):
+    """Create and set surface pallete
+
+    param surface: surface from pygame
+    param value: periodical value in range of 0...359
+    """
     palette = []
     for x in range(256):
-        palette.append([x, x, x, 255])
+        palette_item = (
+            sin_table[value],
+            x,
+            x,
+            255,
+        )
+        palette.append(palette_item)
+        print(palette_item)
     surface.set_palette(palette)
 
 
 def world_loop(display):
     """Main loop"""
     running: bool = True
+    color_value = 0
+    sin_table = calculate_sin_table()
     clock = pygame.time.Clock()
 
     surface = pygame.surfarray.make_surface(generate_surface())
-    greyscale_pallete(surface)
 
     while running:
-        surface = None
         clock.tick(60)
 
         for event in pygame.event.get():
@@ -82,17 +99,17 @@ def world_loop(display):
                 running = False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_n:
                 surface = pygame.surfarray.make_surface(generate_surface())
-                greyscale_pallete(surface)
 
-                #  print(generate_surface())
-                #  print(surface.get_palette())
-                #  greyscale_pallete(surface)
+        change_pallete(surface, color_value, sin_table)
+        display.blit(surface, (0, 0))
+        pygame.display.flip()
 
-        if surface:
-            display.blit(surface, (0, 0))
-            pygame.display.flip()
+        if color_value >= 359:
+            color_value = 0
+        else:
+            color_value += 1
 
-        pygame.display.update()
+        #  pygame.display.update()
 
     pygame.quit()
 
